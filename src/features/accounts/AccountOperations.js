@@ -10,15 +10,19 @@ function AccountOperations() {
   const [currency, setCurrency] = useState("USD");
 
   //read the account data from state. Destructuring from store:
-  const { loan: loanStore, loanPurpose: purposeStore } = useSelector(
-    (store) => store.account
-  );
+  const {
+    loan: loanStore,
+    loanPurpose: purposeStore,
+    isLoading,
+  } = useSelector((store) => store.account);
 
   const dispatch = useDispatch();
 
   function handleDeposit() {
-    dispatch(deposit(depositAmount));
+    if (!depositAmount) return;
+    dispatch(deposit(depositAmount, currency));
     setDepositAmount("");
+    setCurrency("");
   }
 
   function handleWithdrawal() {
@@ -55,7 +59,9 @@ function AccountOperations() {
             <option value="GBP">British Pound</option>
           </select>
 
-          <button onClick={handleDeposit}>Deposit {depositAmount}</button>
+          <button onClick={handleDeposit} disabled={isLoading}>
+            {isLoading ? "Converting..." : `Deposit ${depositAmount}`}
+          </button>
         </div>
         <div>
           <label>Withdraw</label>
