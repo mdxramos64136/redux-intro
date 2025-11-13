@@ -1,26 +1,25 @@
-/** WE DON'T DISPATCH ACTION DIRECTLY TO THE REDUCER. WE NEED TO
+/** ==> CONVERTING TO REDUX TOOLKIT <==
+ * Note how many import was deleted.
+ * That's beacause configureStore does a lot of thing autom for us: 
+  - automatically combine the reducers,
+  - auto add thunks middleware, and 
+  - auto set up developer tools.
+
+ * WE DON'T DISPATCH ACTION DIRECTLY TO THE REDUCER. WE NEED TO
  * DO IT THROUGH STORE!!!!!
  */
 
-import { applyMiddleware, combineReducers, createStore } from "redux"; //deprecated. Atualmente se usa redux tool kit
+//Instead ousing createStore, we now will use
+import { configureStore } from "@reduxjs/toolkit";
 import customerReducer from "./features/customers/customerSlice";
 import accountReducer from "./features/accounts/accountSlice";
-import { thunk } from "redux-thunk";
-import { composeWithDevTools } from "@redux-devtools/extension";
 
-// combine all the reducers:
-// use the combineRducers method. In there, create a obj wiht
-// meaninfull name
-const rootReducer = combineReducers({
-  account: accountReducer,
-  customer: customerReducer,
+const store = configureStore({
+  reducer: {
+    account: accountReducer,
+    customer: customerReducer,
+  },
 });
-
-// creating store to dispatch actions
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk))
-);
 
 //will will get the store into de application (index.js)
 export default store;
