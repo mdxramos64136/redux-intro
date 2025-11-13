@@ -1,0 +1,25 @@
+1. install the google xhrome extension redux dev tools
+
+2. install the package: npm i redux-devtools-extension:
+Obs: O redux-devtools-extension@2.13.9 exige Redux 3.x ou 4.x.
+Você está com Redux 5.0.1 instalado (que saiu recentemente). Então o npm recusa a 
+instalação por conflito de dependência peer.
+
+Desde o Redux 4.2 (e mantido no Redux 5), o suporte ao DevTools é nativo, ou seja,
+você não precisa mais instalar redux-devtools-extension.
+Instale o novo pacote oficial: npm install @redux-devtools/extension
+
+Basta modificar a criação da store assim:
+
+import { createStore } from "redux";
+import { composeWithDevTools } from "@redux-devtools/extension"; // nova lib oficial
+import rootReducer from "./rootReducer";
+
+const store = createStore(rootReducer, composeWithDevTools());
+export default store;
+
+3. put the apply middware INSIDE composeWithDevtools: 
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);

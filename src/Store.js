@@ -6,6 +6,7 @@ import { applyMiddleware, combineReducers, createStore } from "redux"; //depreca
 import customerReducer from "./features/customers/customerSlice";
 import accountReducer from "./features/accounts/accountSlice";
 import { thunk } from "redux-thunk";
+import { composeWithDevTools } from "@redux-devtools/extension";
 
 // combine all the reducers:
 // use the combineRducers method. In there, create a obj wiht
@@ -16,7 +17,10 @@ const rootReducer = combineReducers({
 });
 
 // creating store to dispatch actions
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 
 //will will get the store into de application (index.js)
 export default store;
