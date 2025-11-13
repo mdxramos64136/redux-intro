@@ -1,0 +1,6 @@
+1. Install the package: npm i redux-thunk
+1.1. In the store file, import thunk from redux-thunk 
+2. Apply midd (comes from redux) to the store: const store = createStore(rootReducer, applyMiddleware)
+2.1. Alter the var containing the stroe to inlcude applyMiddleware (not only rootReducer). 
+informe a middl. as a parameter. In this case, "thunk". 
+3. Use it in the action creator functions. 

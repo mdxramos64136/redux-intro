@@ -1,0 +1,15 @@
+- instalando o redux: npm i redux
+- to conect Redux store with the React application install redux package: 
+npm i react-redux
+-provide the store to the app:
++ import { Provider } from "react-redux";
++ Ddepois wrap toda a aplicaçao (index.s) no provider. Bote o <App/> 
+entre a Provider tag.
++ Por fim, crie uma prop store e passe o store que foi importado : 
+import store from "./Store";
+- Now everybody in the component can read data from store and 
+dispatch action to it. 
+- To read data from redux store, all you have to do is 
+use useSelector hook provided by React
+
+Apenas com este pacote react e redux se comunicam. 
