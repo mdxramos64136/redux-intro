@@ -4,9 +4,6 @@
   - automatically combine the reducers,
   - auto add thunks middleware, and 
   - auto set up developer tools.
-
- * WE DON'T DISPATCH ACTION DIRECTLY TO THE REDUCER. WE NEED TO
- * DO IT THROUGH STORE!!!!!
  */
 
 //Instead ousing createStore, we now will use

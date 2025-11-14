@@ -1,4 +1,5 @@
 /** O quê colocar nos slices? initialState | reducer | action Creator*/
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialStateCustomer = {
   fullName: "",
@@ -6,46 +7,34 @@ const initialStateCustomer = {
   createdAt: "",
 };
 
-//////////////// custoemrReducer ////////////////
-export default function customerReducer(state = initialStateCustomer, action) {
-  switch (action.type) {
-    case "customer/createCustomer": {
-      return {
-        ...state,
-        fullName: action.payload.fullName,
-        nationalID: action.payload.customerId,
-        createdAt: action.payload.createdAt,
-      };
-    }
-    case "customer/updateName": {
-      return {
-        ...state,
-        fullName: action.payload,
-      };
-    }
-    default:
-      return state;
-  }
-}
+console.log(initialStateCustomer);
 
-//////////// Customer ////////////
-export function createCustomer(fullName, customerId) {
-  return {
-    type: "customer/createCustomer",
-    payload: {
-      fullName,
-      customerId,
-      createdAt: new Date().getDate(),
+//Observaçao: o nome das propriedades devem ser extamente estes:name, initialState etc...)
+const customerSlice = createSlice({
+  name: "customer",
+  initialState: initialStateCustomer,
+  reducers: {
+    createCustomer: {
+      prepare(fullName, customerId) {
+        return {
+          //side effects and calculations must be here
+          payload: { fullName, customerId, createdAt: new Date().getDate },
+        };
+      },
+      reducer(state, action) {
+        state.fullName = action.payload.fullName;
+        state.nationalID = action.payload.customerId;
+        state.createdAt = action.payload.createdAt;
+      },
     },
-  };
-}
 
-export function updateName(fullName) {
-  return { type: "customer/updateName", payload: fullName };
-}
+    updateCustomer(state, action) {
+      state.fullName = action.fullName;
+    },
+  },
+});
 
-// store.dispatch(createCustomer("Marcel Ramos", "1234"));
-// console.log(store.getState());
+export default customerSlice.reducer;
+export const { updateCustomer, createCustomer } = customerSlice.actions;
 
-// store.dispatch(updateName("Pedro Ramos"));
-// console.log(store.getState());
+console.log(customerSlice);
