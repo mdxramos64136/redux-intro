@@ -5,6 +5,7 @@ import App from "./App";
 import store from "./Store";
 import { Provider } from "react-redux";
 import { createCustomer } from "./features/customers/customerSlice";
+import "./features/accounts/accountSlice";
 
 // store.dispatch(createCustomer("Marcel Ramos", 122345));
 // console.log(store.getState());

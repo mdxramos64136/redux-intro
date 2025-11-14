@@ -1,98 +1,66 @@
 /* O quê colocar nos slices? initialState | reducer | action Creator
  * slice is a piece/ part of the total state.
-The entire state lives in the store 
- * Here we put as much as possible logic.
+ * ADAPTING TO REDUX TOOLKIT
+ * With CREATESLICE imported from tool kit:
+   - actionCreater are auto created from reducers
+   - write reducers are easier because we no longer need switch statements
+   and defaut case are automatic hadled
+   - We can now mutate states inside the reducers
+ */
 
-the entire state lives in the StorageEvent. 
-Here we just a part of the eentire state.
-
- 
-
-*/
-
-const initialStateAccount = {
+import { createSlice } from "@reduxjs/toolkit";
+const initialState = {
   balance: 0,
   loan: 0,
   loanPurpose: "",
   isLoading: false,
 };
 
-//NÃO SE ESQUEÇA DE EXPORTAR!!!!
-export default function accountReducer(state = initialStateAccount, action) {
-  switch (action.type) {
-    //  state domain/ event name
-    case "account/deposit":
-      return {
-        ...state,
-        balance: state.balance + action.payload,
-        isLoading: false,
-      };
-    case "account/withdraw":
-      return { ...state, balance: state.balance - action.payload };
-    case "account/requestLoan":
-      // empréstimo só poderá ser realizado se não tiver outro emprestimo
-      if (state.loan > 0) return state;
-      return {
-        ...state,
-        loan: action.payload.amount,
-        loanPurpose: action.payload.purpose,
-        balance: state.balance + action.payload.amount,
-      };
-    case "account/payLoan":
-      return {
-        ...state,
-        loan: 0,
-        loanPurpose: "",
-        balance: state.balance - state.loan,
-      };
-    case "account/convertingCurrency":
-      return { ...state, isLoading: true };
-    default:
-      return state;
-  }
-}
+//object functions that recieves the options:
+//it also requires one reducer to each action ins there(account/deposist, account/deposist etc...)
+//reducers: deposit(state, action): state is the current state and the
+// is the action sent that contains the payload.
+//Remember: now you can change states inside the reducer
+//we need the preapare() method to prepare data as we can't
+//receive 2 params in redux
+const accountSlice = createSlice({
+  name: "account", // name of the slice
+  initialState, // same name so dont't repeat: initialState: initialState
+  reducers: {
+    deposit(state, action) {
+      state.balance = state.balance + action.payload;
+    },
+    withdraw(state, action) {
+      state.balance -= action.payload;
+    },
 
-/** We won't import the ACTION CREATORS below in the store.
-  * Instead, they will DISPATCH these actions in the React components
-  * (1)If you return a function here, redux knows that it's an async action
-    that willbe executed BEFORE dispatch anything to the store.
-  * In order to dispatch later dispatch the function, you need to pass the dispatch
-  function and the current state (getState) as a parameter.
-*/
-export function deposit(amount, currency) {
-  if (currency === "USD") return { type: "account/deposit", payload: amount };
+    requestLoan: {
+      prepare(amount, purpose) {
+        //return a new obj that will then become the payloadobj in the reducer
+        return {
+          payload: { amount, purpose },
+        };
+      },
+      reducer(state, action) {
+        if (state.loan > 0) return;
+        state.loan += action.payload.amount;
+        state.balance += action.payload.amount;
+        state.loanPurpose = action.payload.purpose;
+      },
+    },
 
-  //(1)
-  return async function (dispatch, getState) {
-    dispatch({ type: "account/convertingCurrency", payload: false });
-    //API call
-    const res = await fetch(
-      `https://api.frankfurter.dev/v1/latest?amount=${amount}&from=${currency}&to=USD`
-    );
+    payLoan(state, action) {
+      state.balance -= state.loan;
+      state.loan = 0;
+      state.loanPurpose = "";
+    },
+  },
+});
 
-    const data = await res.json();
-    console.log(data);
+console.log(accountSlice);
 
-    const converted = data.rates.USD;
-
-    //return the action
-    dispatch({ type: "account/deposit", payload: converted });
-  };
-}
-
-export function withdraw(amount) {
-  return { type: "account/withdraw", payload: amount };
-}
-
-export function requestLoan(amount, purpose) {
-  return {
-    type: "account/requestLoan",
-    payload: { amount, purpose },
-  };
-}
-
-export function payLoan() {
-  return { type: "account/payLoan" };
-}
-
-//console.log(store.getState());
+export default accountSlice.reducer;
+//here we are destructuring the objet that contains many item like
+//acion, reducer, EventCounts. Check it out through console.log(accountSlice);
+export const { deposit, payLoan, withdraw, requestLoan } = accountSlice.actions;
+console.log(requestLoan(300, "fdfdfd"));
